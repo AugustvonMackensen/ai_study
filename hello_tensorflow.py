@@ -99,3 +99,30 @@ answer = tf.argmax(pred, axis=1) # 가장 큰 값의 인덱스 리턴
 print('원본 예측 결과 확인', pred)
 print('해석 결과 : ', answer)
 print('정답 : ', Y_test[0])
+
+# 학습한 모델 저장하기
+# from sklearn.externals import joblib
+import joblib
+joblib.dump(model,'digits.pkl')
+# 저장된 모델을 읽어들이기 : joblib.load()
+
+# 또는 텐서플로우에서는
+model.save('./mnist_model')
+
+import cv2
+
+# 파이썬에서 저장된 숫자 이미지 읽어들임
+test_img = cv2.imread('number.png')
+# 컬러 이미지를 그레이스케일로 변경함
+test_img = cv2.cvtColor(test_img, cv2.COLOR_BGR2GRAY)
+test_img = cv2.resize(test_img, (28, 28))
+test_img = test_img.reshape(1, 28, 28)
+
+# 위에서 학습된 모델에 적용해 봄
+result = model.predict(test_img)
+print(result)
+print(result[0])
+print(tf.argmax(result, axis=1))
+
+
+
