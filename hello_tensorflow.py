@@ -65,10 +65,37 @@ model = tf.keras.models.Sequential()
 layers = tf.keras.layers
 
 # 모델에 레이어 구성함 : 설계 단계임
-model.add(layers.Flatten(input_shape=(28, 28)))
+# Flatten() : 읽은 2차원(가로x세로) 데이터를 1차원 데이터로
+#       바꾸는 layer임
+model.add(layers.Flatten(input_shape=(28, 28))) # 784 개.
+# Dense() : 추출된 데이터를 하나의 레이어로 모아, 원하는 차원으로
+#       축소시키는 layer 임
 model.add(layers.Dense(128, activation='relu'))
-model.add(layers.Dropout(0.2))
+# Dropout() : 서로 연결된 연결망(layer)에서 0에서 1사이의 확률로
+#           뉴런(신경망)을 제거(drop)하는 기법을 적용한 layer 임
+model.add(layers.Dropout(0.2))  # 신경망을 20%로 줄임
 model.add(layers.Dense(10, activation='softmax'))
 
 # 인공신경망 요약 내용 보기
 model.summary()
+
+# 구축된 모델을 준비된 테이터로 학습시키기
+# 인공신경망 학습 환경 설정
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+
+# 모델을 적용해서 학습 시킴 (머신 러닝) : fit
+# fit(입력데이터, 출력데이터, 학습횟수)
+model.fit(X_train, Y_train, epochs=5)
+
+# 모델을 평가
+# evaluate(테스트용 입력데이터, 테스트용 출력데이터) 사용
+model.evaluate(X_test, Y_test)
+
+# 인공신경망 사용(적용) 테스트 : 예측 테스트
+pick = X_test[0].reshape(1, 28, 28) # 채널, 가로, 세로
+pred = model.predict(pick) # 모델 적용
+answer = tf.argmax(pred, axis=1) # 가장 큰 값의 인덱스 리턴
+
+print('원본 예측 결과 확인', pred)
+print('해석 결과 : ', answer)
+print('정답 : ', Y_test[0])
