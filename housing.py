@@ -31,6 +31,8 @@ M_BATCH = 64    # 가중치를 적용할 샘플의 갯수
 
 ### 데이터 준비하기 ###
 # 데이터 파일 읽기 => 읽은 결과는 pandas의 데이터프레임 형식임
+# pandas dataframe == 표(table) == numpy 2d Array
+# dataframe : columns X rows, 2d Array(행열) : rows X columns
 raw = pd.read_csv('housing.csv')
 heading = ['CRIM','ZN','INDUS','CHAS','NOX','RM','AGE','DIS','RAD','TAX','PTRATIO','LSTAT','MEDV']
 
@@ -45,3 +47,54 @@ print(raw.describe())
 ### CUDA Toolkit 11.0 설치 후 파이썬(파이참) 종료후
 ### 재실행하면 없어짐!
 ### 참고 : https://leunco.tistory.com/13
+
+# 입력 데이터 정규화 처리(입력데이터를 값의 분포를 정리하는 것)
+# 데이터 전처리에 해당됨
+
+# Z-점수 정규화(Z-Score Normalization) 처리
+# 어떤 데이터가 표준정규분포에 해당되도록 값을 바꾸는 것
+# Z = (X-평균) / 표준편차
+# 계산에 사용할 입력데이터(x)를 사용해서 나온 결과타입은
+# numpy의 n-차원 행렬 형식이다.
+scaler = StandardScaler() # 표준정규분포로 만드는 객체 생성
+# 표준편차(std : 평균값의 차이)를 1과 가깝게 바꾸는 정규화 객체임.
+Z_data = scaler.fit_transform(raw) # 정규화처리가 된 행렬 반환
+# 컬럼라벨을 제외한 데이터로만 구성된 행렬(matrix) 만들기함
+
+# numpy에서 pandas로 전환(matrix --> DataFrame)
+# header (컬럼라벨) 정보 사용해서 복구함
+Z_data = pd.DataFrame(Z_data, columns=heading)
+
+# 정규화된 데이터 출력 확인
+print('정규화된 데이터 샘플 10개 확인')
+print(Z_data.head(10))
+
+print('정규화된 데이터 통계')
+print(Z_data.describe())
+
+# 상자 그림(boxplot) 출력 확인
+sns.set(font_scale=1)
+sns.boxplot(data=Z_data, palette='dark')
+# sns.boxplot(data=raw, palette='dark')
+plt.show()
+
+### data preprocessing (데이터 전처리) ------------------------------------
+
+# 데이터 입력과 출력으로 분리
+print('분리전 데이터 형태 : ', Z_data.shape)
+X_data = Z_data.drop('MEDV', axis=1)
+# 'MEDV' 를 제외한 모든 값(12열)
+Y_data = Z_data['MEDV'] # 'MEDV' 컬럼의 값들(1열)
+
+# 정규화하지 않은 원래의 입력데이터로 학습데이터를 만들 경우
+# X_data = raw.drop('MEDV', axis=1) # 'MEDV'를 제외한 모든값(12열)
+# Y_data = raw['MEDV'] # 'MEDV' 컬럼의 값들(1열)
+
+# 데이터 분리 : 학습용, 테스트용
+X_train, X_test, Y_train, Y_test = train_test_split(X_data, Y_data, test_size=0.3)
+print('학습용 입력데이터 형태 : ', X_train.shape)
+print('학습용 출력데이터 형태 : ', Y_train.shape)
+print('테스트용 입력데이터 형태 : ', X_test.shape)
+print('테스트용 출력데이터 형태 : ', Y_test.shape)
+
+### 인공신경망 모델 설계 구현(구축) ###
