@@ -108,8 +108,8 @@ model.add(Dense(1000, activation='relu'))
 
 # 500개의 뉴런을 가진 히든 레이어 2개 추가해 봄
 # 결론 : 학습시간 늘어남, 오차율 변화없음 확인
-model.add(Dense(500, activation='relu'))
-model.add(Dense(500, activation='relu'))
+# model.add(Dense(500, activation='relu'))
+# model.add(Dense(500, activation='relu'))
 
 # 출력층
 model.add(Dense(1))
@@ -123,6 +123,21 @@ print(model.summary())
 
 # 최적화 함수(가중치 보정)와 손실함수(오차율) 지정
 model.compile(optimizer='sgd', loss='mse')
+# sgd : 경사하강법(Gradient Descent)
+# 경사하강법은 1차 미분계수를 이용해서 함수의 최소값을 찾아가는
+# iternative한 방법이다.
+# 머신러닝 및 딥러닝 알고리즘을 학습시킬 때 사용하는
+# 가중치를 보정하는 방법 중 하나이고, 1차 근사값 발견용
+# 최적화 알고리즘이다.
+
+# mse : 평균 제곱 오차(Mean Square Error : MSE)
+# 단순히 실제 데이터와 예측 데이터 편차의 제곱의 합이었던
+# 오차제곱합(SSE)을 데이터의 크기(갯수)로 나눠서 평균으로 만든 것
+# 머신러닝 뿐만 아니라 영상처리 영역에서도 자주 사용되는
+# 추측값에 대한 정확도 측정 방법임
+# 즉, 오차의 제곱에 대해 평균을 구한 것이다.
+# 0에 가까울수록 원본과의 오차가 적은 것이므로 정확도가 높은 것임
+
 
 print('DNN 딥러닝 학습 시작')
 begin = time()
