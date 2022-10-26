@@ -17,6 +17,22 @@ from keras.layers import Conv2D, MaxPool2D
 
 # 하이퍼 파라미터
 M_EPOCH = 3
+# 총 학습시간 : 51.6초
+# 최종 정확도 : 88.56%
+# f1점수 : 0.886
+# M_EPOCH = 0
+# 결론 : 학습을 하지 않고 진행하는 것임
+# 총 학습시간 : 0.1초
+# 최종 정확도 : 8.90%
+# f1 점수 :0.089
+# 모델의 성능은 0에 가까움(아주 나쁨)
+# 정확도 감소, 혼동행렬에서 대각선 외 값 숫자가 증가하여 대각선 값보다 큰 값이 대각선 밖에 존재함.
+# M_EPOCH = 20
+# 학습시간 증가.
+# 총 학습시간 : 313.1 초
+# 최종 정확도 : 91.61%
+# f1 점수 : 0.916
+# 모델의 성능은 1에 가까움. (아주 좋음)
 M_BATCH = 300
 
 ### 데이터 준비하기 ###
@@ -108,7 +124,15 @@ model.summary()
 ### 인공신경망 학습 ###
 
 # 최적화 함수와 손실 함수 지정
-model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['acc'])
+# model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['acc'])
+# model.compile(optimizer='sgd', loss='categorical_crossentropy', metrics=['acc'])
+# 최적화 함수를 adam에서 sgd로 변경
+# 혼동행렬 대각선 외 숫자가 증가
+# 총 학습 시간 : 51.4초
+# 최종 정확도 : 72.42%
+# f1 점수 : 0.724
+# 정확도가 감소.
+model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['acc'])
 
 begin = time()
 print('CNN 학습 시작')
@@ -135,3 +159,10 @@ print('혼동 행렬')
 print(confusion_matrix(trust, pred))
 # 평가데이터와 결과데이터 사용
 # 실제값과 예측값이 일치할 때 값 출력됨(대각선)
+
+# F1 점수
+# 정밀도(precision)와 재현율(recall)의 조화 평균임.
+# 모델 예측 성능을 수치화한 값
+# 1에 가까울수록 모델의 예측 성능은 좋다고 봄
+f1 = f1_score(trust, pred, average='micro')
+print('f1 점수 : {:.3f}'.format(f1))
