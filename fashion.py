@@ -124,7 +124,7 @@ model.summary()
 ### 인공신경망 학습 ###
 
 # 최적화 함수와 손실 함수 지정
-# model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['acc'])
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['acc'])
 # model.compile(optimizer='sgd', loss='categorical_crossentropy', metrics=['acc'])
 # 최적화 함수를 adam에서 sgd로 변경
 # 혼동행렬 대각선 외 숫자가 증가
@@ -132,7 +132,7 @@ model.summary()
 # 최종 정확도 : 72.42%
 # f1 점수 : 0.724
 # 정확도가 감소.
-model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['acc'])
+# model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['acc'])
 
 begin = time()
 print('CNN 학습 시작')
