@@ -71,3 +71,67 @@ print('One-hot encoding 후: ', Y_train[0])
 # 학습 후 나온 예측결과값이 9.0이 나오면 라벨 9와 일치하지 않게 됨
 # 이런 문제를 막기 위해 one-hot 인코딩으로 라벨값을 바꿈
 
+Y_test = to_categorical(Y_test, 10)
+
+print('학습용 출력데이터 모양 : ', Y_train.shape)
+print('평가용 출력데이터 모양 : ', Y_test.shape)
+
+### 인공신경망 구축 ###
+# CNN 구현 (순차적 방법)
+model = Sequential()
+# Sequential 모델 : 각 레이어에 정확히 하나의 입력 텐서와
+#       하나의 출력 텐서가 있는 일반 레이어 스택을 구성하는 모델임
+
+# 입력층
+model.add(InputLayer(input_shape=(28, 28, 1)))
+
+# 첫 번째 합성곱 블럭
+# kernel_size : filter size 를 의미함, 2: (2,2), 5 : (5,5)
+# 32 : channel 갯수임
+model.add(Conv2D(32, kernel_size=2, padding='same', activation='relu'))
+model.add(MaxPool2D(pool_size=2))
+
+# 두번째 합성곱 블럭
+model.add(Conv2D(64, kernel_size=2, padding='same', activation='relu'))
+model.add(MaxPool2D(pool_size=2))
+
+# fully-connected 층으로 마무리
+model.add(Flatten()) # 1차원 변환
+model.add(Dense(128, activation='relu'))
+# 가중치를 적용해서 특징값 찾음
+model.add(Dense(10, activation='softmax'))
+# softmax : 클래스 분류 문제에 사용하는 활성화 함수임
+
+print('CNN 요약')
+model.summary()
+
+### 인공신경망 학습 ###
+
+# 최적화 함수와 손실 함수 지정
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['acc'])
+
+begin = time()
+print('CNN 학습 시작')
+
+model.fit(X_train, Y_train, epochs=M_EPOCH, batch_size=M_BATCH, verbose=1)
+
+end = time()
+print('총 학습 시간 : {:.1f}초'.format(end - begin))
+
+### 인공신경망 모델 평가
+# CNN 평가
+_, score = model.evaluate(X_test, Y_test, verbose=1)
+
+print('최종 정확도 : {:.2f}%'.format(score * 100))
+
+# CNN 테스트 데이터 적용 예측값 확인하기
+pred = model.predict(X_test)
+pred = np.argmax(pred, axis=1)
+trust = np.argmax(Y_test, axis=1)
+
+# 혼동 행렬 (정확도, 정밀도, 재현율, F1 점수라고 함)
+# 모델의 성능을 평가할 때 사용하는 지표
+print('혼동 행렬')
+print(confusion_matrix(trust, pred))
+# 평가데이터와 결과데이터 사용
+# 실제값과 예측값이 일치할 때 값 출력됨(대각선)
