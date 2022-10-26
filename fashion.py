@@ -168,18 +168,18 @@ f1 = f1_score(trust, pred, average='micro')
 print('f1 점수 : {:.3f}'.format(f1))
 
 # 테스트
-import cv2
-import tensorflow as tf
-
-# 이미지 불러오기
-test_img = cv2.imread('sneakers2.jpg')
-
-# 컬러 이미지를 그레이스케일로 변경
-test_img = cv2.cvtColor(test_img, cv2.COLOR_BGR2GRAY)
-test_img = cv2.resize(test_img, (28, 28))
-test_img = test_img.reshape(1, 28, 28)
-
-result = model.predict(test_img)
-print(result)
-print(result[0])
-print(tf.argmax(result, axis=1))
+# import cv2
+# import tensorflow as tf
+#
+# # 이미지 불러오기
+# test_img = cv2.imread('sneakers2.jpg')
+#
+# # 컬러 이미지를 그레이스케일로 변경
+# test_img = cv2.cvtColor(test_img, cv2.COLOR_BGR2GRAY)
+# test_img = cv2.resize(test_img, (28, 28))
+# test_img = test_img.reshape(1, 28, 28)
+#
+# result = model.predict(test_img)
+# print(result)
+# print(result[0])
+# print(tf.argmax(result, axis=1))
