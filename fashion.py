@@ -1,6 +1,12 @@
 # fashion.py
 # 딥러닝 CNN 적용 패션 아이템 구분하기
 
+# GPU 사용 강제
+import os
+os.environ['CUDA_VISIBLE_DEVICES']='0'
+
+import tensorflow
+
 import numpy as np
 import matplotlib.pyplot as plt
 from time import time
